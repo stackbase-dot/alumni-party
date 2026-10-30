@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>同窓会 当日受付ページ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F8F5F0;
+            --surface: #FFFFFF;
+            --ink: #2C2C2C;
+            --muted: #6B6560;
+            --accent: #B8976B;
+            --accent-deep: #9A7B52;
+            --accent-weak: color-mix(in oklab, var(--accent) 10%, var(--bg));
+            --line: color-mix(in oklab, var(--ink) 8%, transparent);
+            --step-0: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+            --step-1: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
+            --step-2: clamp(1.6rem, 1.3rem + 1.5vw, 2.4rem);
+            --step-3: clamp(2.2rem, 1.7rem + 2.5vw, 3.2rem);
+            --space: clamp(1.2rem, 1rem + 1vw, 2rem);
+            --radius: 16px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.04), 0 12px 32px -8px rgba(0,0,0,0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+            font-size: var(--step-0);
+            line-height: 1.85;
+            color: var(--ink);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== パスワード画面 ===== */
+        #passwordGate {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: linear-gradient(160deg, #2C3E50 0%, #3D5166 60%, #4A6478 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space);
+        }
+
+        .password-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: calc(var(--space) * 2.2) calc(var(--space) * 1.8);
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 24px 64px -16px rgba(0,0,0,0.35);
+            text-align: center;
+        }
+
+        .password-card .lock-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto calc(var(--space) * 0.8);
+            background: var(--accent-weak);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+        }
+
+        .password-card h2 {
+            font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+            font-size: var(--step-1);
+            font-weight: 600;
+            margin-bottom: 0.3em;
+        }
+
+        .password-card .subtitle {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: calc(var(--space) * 1);
+        }
+
+        .password-input-wrap {
+            position: relative;
+            margin-bottom: calc(var(--space) * 0.7);
+        }
+
+        .password-input-wrap input {
+            width: 100%;
+            padding: 1em 1.2em;
+            font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            text-align: center;
+            border: 2px solid var(--line);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.25s ease;
+        }
+
+        .password-input-wrap input:focus {
+            border-color: var(--accent);
+        }
+
+        .password-input-wrap input.error {
+            border-color: #C75B5B;
+            background: #FDF2F2;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .password-hint {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-bottom: calc(var(--space) * 0.6);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+            width: 100%;
+            padding: 1em 1.5em;
+            font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px -4px rgba(184,151,107,0.5);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -4px rgba(184,151,107,0.6);
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #6B9E6B 0%, #4A7A4A 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px -4px rgba(90,138,90,0.5);
+        }
+
+        .btn-green:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -4px rgba(90,138,90,0.6);
+        }
+
+        .btn-disabled {
+            background: #E8E4DF;
+            color: #999;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .error-msg {
+            color: #B23A3A;
+            font-size: 0.85rem;
+            margin-top: 0.6em;
+            min-height: 1.5em;
+        }
+
+        .btn-note {
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 0.6em;
+        }
+
+        /* ===== メインコンテンツ（初期非表示 ===== */
+        #mainContent {
+            display: none;
+        }
+
+        /* ヒーローセクション */
+        .hero {
+            background: linear-gradient(160deg, #2C3E50 0%, #3D5166 60%, #4A6478 100%);
+            color: #fff;
+            padding: calc(var(--space) * 3) calc(var(--space) * 1.5);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -40%;
+            right: -20%;
+            width: 70%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(184,151,107,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid rgba(184,151,107,0.4);
+            padding: 0.35em 1.2em;
+            border-radius: 100px;
+            margin-bottom: calc(var(--space) * 0.8);
+        }
+
+        .hero h1 {
+            font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+            font-size: var(--step-3);
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: 0.04em;
+            margin-bottom: calc(var(--space) * 0.6);
+        }
+
+        .hero-date {
+            font-size: var(--step-1);
+            font-weight: 300;
+            opacity: 0.9;
+            letter-spacing: 0.08em;
+        }
+
+        .hero-decoration {
+            width: 48px;
+            height: 2px;
+            background: var(--accent);
+            margin: calc(var(--space) * 0.8) auto 0;
+            border-radius: 2px;
+        }
+
+        main {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: calc(var(--space) * 2.5) var(--space);
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: calc(var(--space) * 1.8);
+            margin-bottom: calc(var(--space) * 1.2);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--line);
+        }
+
+        .card h2 {
+            font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+            font-size: var(--step-1);
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: calc(var(--space) * 0.7);
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+
+        .card h2 .icon {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 0.97rem;
+            line-height: 2;
+        }
+
+        .card p + p {
+            margin-top: 1em;
+        }
+
+        .thanks-section {
+            text-align: center;
+            padding: calc(var(--space) * 2) calc(var(--space) * 1.5);
+        }
+
+        .thanks-section h2 {
+            justify-content: center;
+        }
+
+        .thanks-section .lead {
+            font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+            font-size: var(--step-1);
+            color: var(--ink);
+            line-height: 1.9;
+            margin-bottom: calc(var(--space) * 0.8);
+        }
+
+        .photo-section {
+            background: linear-gradient(180deg, var(--surface) 0%, var(--accent-weak) 100%);
+            border: 1px solid color-mix(in oklab, var(--accent) 20%, transparent);
+        }
+
+        .photo-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5em;
+            background: color-mix(in oklab, var(--accent) 12%, var(--surface));
+            color: var(--accent-deep);
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 0.5em 1.2em;
+            border-radius: 100px;
+            margin-bottom: calc(var(--space) * 0.8);
+        }
+
+        .photo-status .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-deep);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .photo-deadline {
+            display: flex;
+            align-items: center;
+            gap: 0.6em;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 1em 1.2em;
+            margin: calc(var(--space) * 0.8) 0;
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+
+        .photo-deadline strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .photo-block {
+            margin-bottom: calc(var(--space) * 1.2);
+        }
+
+        .photo-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .photo-wait-msg {
+            font-size: 0.92rem;
+            color: var(--muted);
+            font-style: italic;
+            margin-top: 0.5em;
+            padding: 0.8em 1em;
+            background: var(--bg);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .from-committee {
+            text-align: right;
+            font-size: 0.95rem;
+            color: var(--muted);
+            margin-top: calc(var(--space) * 0.5);
+        }
+
+        footer {
+            text-align: center;
+            padding: calc(var(--space) * 1.5) var(--space);
+            color: var(--muted);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--line);
+            margin-top: calc(var(--space) * 1);
+        }
+
+        hr.divider {
+            border: none;
+            border-top: 1px solid var(--line);
+            margin: calc(var(--space) * 1.5) 0;
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .card {
+                opacity: 0;
+                transform: translateY(20px);
+                animation: fadeUp 0.7s ease forwards;
+            }
+            .card:nth-child(1) { animation-delay: 0.1s; }
+            .card:nth-child(2) { animation-delay: 0.25s; }
+            .card:nth-child(3) { animation-delay: 0.4s; }
+            .card:nth-child(4) { animation-delay: 0.55s; }
+
+            @keyframes fadeUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: calc(var(--space) * 2) var(--space);
+            }
+            .card {
+                padding: calc(var(--space) * 1.2);
+            }
+            .password-card {
+                padding: calc(var(--space) * 1.6) var(--space);
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+            .hero {
+                background: #2C3E50 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .btn, #passwordGate {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== パスワード入力画面 ===== -->
+    <div id="passwordGate">
+        <div class="password-card">
+            <div class="lock-icon">&#x1F512;</div>
+            <h2>参加者専用ページ</h2>
+            <p class="subtitle">同窓会参加者の方のみご覧いただけます</p>
+
+            <div class="password-input-wrap">
+                <input 
+                    type="password" 
+                    id="passwordInput" 
+                    placeholder="パスワードを入力"
+                    maxlength="20"
+                    autocomplete="off"
+                >
+            </div>
+
+            <p class="password-hint">&#x1F4A1; ヒント：卒業年度を西暦4桁で入力（例：1988）</p>
+
+            <button class="btn btn-primary" onclick="checkPassword()">
+                <span>&#x1F511;</span> ページを開く
+            </button>
+
+            <p class="error-msg" id="errorMsg"></p>
+        </div>
+    </div>
+
+    <!-- ===== メインコンテンツ ===== -->
+    <div id="mainContent">
+        <header class="hero">
+            <div class="hero-badge">Welcome Back</div>
+            <h1>同窓会<br>当日受付ページ</h1>
+            <p class="hero-date">2026年11月 ○○日（○）</p>
+            <div class="hero-decoration"></div>
+        </header>
+
+        <main>
+            <section class="card thanks-section">
+                <h2><span class="icon">&#x1F338;</span> ご参加いただき、ありがとうございます</h2>
+                <p class="lead">
+                    本日はお忙しい中、同窓会にお越しいただき<br>
+                    誠にありがとうございます。
+                </p>
+                <p>
+                    久しぶりに皆様のお顔を拝見でき、幹事一同、心より歓びを感じております。<br>
+                    学生時代思い出話に花を咲かせ、今日という日を皆様とともに過ごせることは、私たちにとって何よりの喜びです。
+                </p>
+                <p>
+                    短い時間ではございますが、思い思いの時間をお楽しみいただければ幸いです。<br>
+                    どうぞ、ゆっくりと、そして楽しくお過ごしください。
+                </p>
+                <p class="from-committee">同窓会幹事 一同</p>
+            </section>
+
+            <section class="card">
+                <h2><span class="icon">&#x1F4CD;</span> 当日のご案内</h2>
+                <p>
+                    <strong>開催日時：</strong>2026年11月○○日（○）　○○:○○ ～ ○○:○○<br>
+                    <strong>会　　場：</strong>○○○○（○○○○ホール）<br>
+                    <strong>住　　所：</strong>○○県○○市○○町○-○-○
+                </p>
+                <p style="font-size: 0.9rem; margin-top: 0.8em;">
+                    ※ 会場には○○時より受付を設置しております。お気軽にお越しください。<br>
+                    ※ お帰りの際は、お忘れ物のないようご注意ください。
+                </p>
+            </section>
+
+            <section class="card photo-section">
+                <h2><span class="icon">&#x1F4F8;</span> 写真共有アルバム</h2>
+
+                <div class="photo-status">
+                    <span class="dot"></span>
+                    写真は随時追加・公開しています
+                </div>
+
+                <!-- 2018年 -->
+                <div class="photo-block">
+                    <div class="photo-deadline" style="border-left: 4px solid var(--accent);">
+                        <span>&#x1F4F7;</span>
+                        <span><strong>2018年 同窓会の写真</strong>（前回分）</span>
+                    </div>
+                    <p style="font-size: 0.9rem; margin-bottom: 1em;">
+                        2018年に開催された同窓会の写真です。<br>
+                        前回参加できなかった方も、ぜひご覧ください。
+                    </p>
+                    <a href="https://photos.google.com/share/【2018年の共有リンク】" 
+                       class="btn btn-primary" target="_blank" rel="noopener">
+                        <span>&#x1F4F7;</span> 2018年の写真アルバムを見る
+                    </a>
+                    <p class="btn-note" style="color: #B23A3A; font-weight: 500;">
+                        &#x23F0; 期間限定公開：2026年11月○○日（○）まで（あと3日間）
+                    </p>
+                </div>
+
+                <hr class="divider">
+
+                <!-- 2026年 -->
+                <div class="photo-block">
+                    <div class="photo-deadline" style="border-left: 4px solid #5A8A5A;">
+                        <span>&#x1F4F8;</span>
+                        <span><strong>2026年 同窓会の写真</strong>（今回分）</span>
+                    </div>
+                    <p style="font-size: 0.9rem; margin-bottom: 1em;">
+                        本日の同窓会で撮影した写真です。<br>
+                        準備が完了し次第、随時公開していきます。
+                    </p>
+
+                    <!-- ボタン：フラグで制御 -->
+                    <div id="photo2026Btn" style="display: none;">
+                        <a href="https://photos.google.com/share/【2026年の共有リンク】" 
+                           class="btn btn-green" target="_blank" rel="noopener">
+                            <span>&#x1F4F8;</span> 2026年の写真アルバムを見る
+                        </a>
+                        <p class="btn-note">
+                            &#x1F4C5; 公開期限：2026年12月31日（木）まで
+                        </p>
+                    </div>
+
+                    <!-- 準備中メッセージ：常に表示 -->
+                    <p class="photo-wait-msg" id="photo2026Msg">
+                        &#x23F3; 写真は整理が完了し次第、公開いたします。しばらくお待ちください。
+                    </p>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2><span class="icon">&#x2709;</span> お問い合わせ</h2>
+                <p style="font-size: 0.95rem;">
+                    当日のご不明点や、写真公開に関するお問い合わせは、幹事までご連絡ください。<br>
+                    <strong>E-mail：</strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="463529332b3306233e272b362a236825292b">[email&#160;protected]</a>　（幹事連絡先メールアドレス）
+                </p>
+            </section>
+        </main>
+
+        <footer>
+            <p>同窓会幹事会　&copy; 2026</p>
+        </footer>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // ===== パスワード設定 =====
+        const CORRECT_PASSWORD = "1988";
+
+        // ===== 2026年写真公開フラグ =====
+        // 写真をアップロードし公開準備ができたら、false を true に変更してください
+        const PHOTOS_2026_READY = false;
+
+        function checkPassword() {
+            const input = document.getElementById("passwordInput");
+            const errorMsg = document.getElementById("errorMsg");
+            const gate = document.getElementById("passwordGate");
+            const main = document.getElementById("mainContent");
+
+            if (input.value === CORRECT_PASSWORD) {
+                gate.style.opacity = "0";
+                gate.style.transition = "opacity 0.5s ease";
+                setTimeout(() => {
+                    gate.style.display = "none";
+                    main.style.display = "block";
+                    document.body.style.overflow = "auto";
+                }, 500);
+            } else {
+                input.classList.add("error");
+                errorMsg.textContent = "パスワードが違います。もう一度お試しください。";
+                setTimeout(() => {
+                    input.classList.remove("error");
+                }, 600);
+            }
+        }
+
+        document.getElementById("passwordInput").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                checkPassword();
+            }
+        });
+
+        // ===== 2026年写真ボタンの表示制御 =====
+        document.addEventListener("DOMContentLoaded", function() {
+            if (PHOTOS_2026_READY) {
+                document.getElementById("photo2026Btn").style.display = "block";
+                document.getElementById("photo2026Msg").style.display = "none";
+            }
+        });
+    </script>
+
+</body>
+</html>
