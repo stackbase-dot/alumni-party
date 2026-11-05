@@ -131,4 +131,7 @@ QRコード作成
 Settings → Pages → None、またはリポジトリ削除
 
 
+QRcodeはQRのすすめをつかった
+
+
 
